@@ -1,40 +1,35 @@
 import React from "react";
 import { TouchableHighlight, StyleSheet, Text, View } from "react-native";
+import { connect } from "react-redux";
+import {increment, decrement, reset} from './actions'
 
-export default class Counter extends React.Component {
-  state = {
-    count: 0
-  };
-
-  increment = () => {
-    this.setState({
-      count: this.state.count + 1
-    });
-  };
-  decrement = () => {
-    this.setState({
-      count: this.state.count - 1
-    });
-  };
-
+class Counter extends React.Component {
   render() {
     return (
       <View style={styles.container}>
         <Text style={{ fontSize: 32 }}>Basic React Redux</Text>
-        <Text>{this.state.count}</Text>
+        <Text>{this.props.count}</Text>
         <View>
           <TouchableHighlight
-            onPress={this.increment}
+            onPress={() => this.props.increment({payload: 5})}
             style={{ backgroundColor: "green", marginRight: 5, padding: 10 }}
           >
             <Text>Increment</Text>
           </TouchableHighlight>
           <TouchableHighlight
-            onPress={this.decrement}
+            onPress={this.props.decrement}
             style={{ backgroundColor: "red", marginRight: 5, padding: 10 }}
           >
             <Text>Decrement</Text>
           </TouchableHighlight>
+        </View>
+        <View style={{ marginTop: 10 }}>
+          <TouchableHighlight
+            onPress={this.props.reset}
+            style={{ backgroundColor: "green", marginRight: 5, padding: 10 }}
+          >
+            <Text>Reset</Text>
+         
         </View>
       </View>
     );
@@ -49,3 +44,18 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   }
 });
+
+const mapDispatchToProps = dispatch => ({
+  increment: (payload) => dispatch(increment(payload)),
+  decrement: () => dispatch(decrement()),
+  reset: () => dispatch(reset())
+});
+
+const mapStateToProps = state => ({
+  count: state.count
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Counter);
